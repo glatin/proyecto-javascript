@@ -14,10 +14,14 @@ function Cart() {
         products.push(product);
         localStorage.setItem('cartProducts', JSON.stringify(products));
     };
-    // método para aplicar código de descuento
+    // método para aplicar código de descuento. Devuelve True si el descuento se puede aplicar correctamente.
     this.addDiscountCode = function (discountCode) {
-        discountPrice = discountCode.getValue();
-        localStorage.setItem('cartDiscount', discountPrice);
+        if (discountCode.getValue() <= this.getTotal()){
+            discountPrice = discountCode.getValue();
+            localStorage.setItem('cartDiscount', discountPrice);
+            return true;
+        }
+        return false;
     };
     // método para sacar stock de los productos agregados al carrito y vaciar carrito
     this.completeOrder = function () {

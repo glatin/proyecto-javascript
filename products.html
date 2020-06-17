@@ -17,13 +17,12 @@
 	<!-- Theme style  -->
 	<link rel="stylesheet" href="css/style.css">
 	<!-- Mis Javascripts -->
-	<script src="js/Product.js"></script>
+	<script src="js/ProductList.js"></script>
 	<script src="js/Cart.js"></script>
 	<script src="js/DiscountCode.js"></script>
 	<script src="js/app.js"></script>
-
-
-
+	
+	
 	</head>
 	<body>
 	
@@ -96,7 +95,7 @@
 									<div class="desc">
 										<h2>Borcegos APRIL</h2>
 										<span class="price">$5339.00</span>
-										<a href="#" class="btn btn-primary btn-lg">Agregar al carrito</a>
+										<a class="btn btn-primary btn-lg btn-add-product" data-id="23">Agregar al carrito</a>
 									</div>
 								</div>
 							</div>
@@ -108,7 +107,7 @@
 									<div class="desc">
 										<h2>Zapatos AMERICA</h2>
 										<span class="price">$4199.00</span>
-										<a href="#" class="btn btn-primary btn-lg">Agregar al carrito</a>
+										<a class="btn btn-primary btn-lg btn-add-product" data-id="24">Agregar al carrito</a>
 									</div>
 								</div>
 							</div>
@@ -120,7 +119,7 @@
 									<div class="desc">
 										<h2>Zapatillas NASA</h2>
 										<span class="price">$3999.00</span>
-										<a href="#" class="btn btn-primary btn-lg">Agregar al carrito</a>
+										<a class="btn btn-primary btn-lg btn-add-product" data-id="25">Agregar al carrito</a>
 									</div>
 								</div>
 							</div>
@@ -133,7 +132,7 @@
 									<div class="desc">
 										<h2>Zapatillas SPACE</h2>
 										<span class="price">$2880.00</span>
-										<a href="#" class="btn btn-primary btn-lg">Agregar al carrito</a>
+										<a class="btn btn-primary btn-lg btn-add-product" data-id="26">Agregar al carrito</a>
 									</div>
 								</div>
 							</div>
@@ -145,7 +144,7 @@
 									<div class="desc">
 										<h2>Zapatos LOLA</h2>
 										<span class="price">$5149.00</span>
-										<a href="#" class="btn btn-primary btn-lg">Agregar al carrito</a>
+										<a class="btn btn-primary btn-lg btn-add-product" data-id="27">Agregar al carrito</a>
 									</div>
 								</div>
 							</div>
@@ -157,7 +156,7 @@
 									<div class="desc">
 										<h2>Zapatillas ELON</h2>
 										<span class="price">$2380.00</span>
-										<a href="#" class="btn btn-primary btn-lg">Agregar al carrito</a>
+										<a class="btn btn-primary btn-lg btn-add-product" data-id="28">Agregar al carrito</a>
 									</div>
 								</div>
 							</div>
@@ -189,6 +188,7 @@
 								<span>Eliminar</span>
 							</div>
 						</div>
+						<!--
 						<div class="product-cart d-flex">
 							<div class="one-forth">
 								<div class="product-img" style="background-image: url(images/item-6.jpg);">
@@ -219,38 +219,8 @@
 								</div>
 							</div>
 						</div>
-						<div class="product-cart d-flex">
-							<div class="one-forth">
-								<div class="product-img" style="background-image: url(images/item-5.jpg);">
-								</div>
-								<div class="display-tc">
-									<h3>Zapatos Lola</h3>
-								</div>
-							</div>
-							<div class="one-eight text-center">
-								<div class="display-tc">
-									<span class="price">$5149.00</span>
-								</div>
-							</div>
-							<div class="one-eight text-center">
-								<div class="display-tc">
-									<span class="price">x 1</span>
-								</div>
-							</div>
-							<div class="one-eight text-center">
-								<div class="display-tc">
-									<span class="price">$5149.00</span>
-								</div>
-							</div>
-
-							
-							<div class="one-eight text-center">
-								<div class="display-tc">
-									<a href="#" class="closed"></a>
-								</div>
-							</div>
-						</div>
-						
+					-->			
+					
 					</div>
 				</div>
 				<div class="row row-pb-lg">
@@ -258,13 +228,13 @@
 						<div class="total-wrap">
 							<div class="row">
 								<div class="col-sm-8">
-									<form action="#">
-										<div class="row form-group">
+									<form">
+										<div class="row form-group" id="discount-code-div">
 											<div class="col-sm-9">
-												<input type="text" name="quantity" class="form-control input-number" placeholder="Código de descuento">
+												<input type="text" name="quantity" class="form-control input-number" placeholder="Código de descuento" id="input-discount-code">
 											</div>
 											<div class="col-sm-3">
-												<input type="submit" value="Aplicar código" class="btn btn-primary">
+												<input type="submit" value="Aplicar código" class="btn btn-primary" id="submit-code">
 											</div>
 										</div>
 									</form>
@@ -272,12 +242,12 @@
 								<div class="col-sm-4 text-center">
 									<div class="total">
 										<div class="sub">
-											<p><span>Subtotal:</span> <span>$9909.00</span></p>
-											<p><span>Envío:</span> <span>$300.00</span></p>
-											<p><span>Descuento:</span> <span>$500.00</span></p>
+											<p><span>Subtotal:</span> <span id="cart-subtotal">$0</span></p>
+											<p><span>Envío:</span> <span id ="cart-shipping">$0</span></p>
+											<p><span>Descuento:</span> <span id="cart-discount">$0</span></p>
 										</div>
 										<div class="grand-total">
-											<p><span><strong>Total:</strong></span> <span>$9109.00</span></p>
+											<p><span><strong>Total:</strong></span> <span id="cart-total">$0</span></p>
 										</div>
 									</div>
 								</div>
