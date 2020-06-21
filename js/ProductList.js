@@ -4,7 +4,7 @@ function ProductList(){
             "id": 23,
             "name": "APRIL",
             "price": 5339,
-            "image": "images/item-1.jpg",
+            "img": "images/item-1.jpg",
             "category": "Borcegos",
             "stock": 10
         },
@@ -12,7 +12,7 @@ function ProductList(){
             "id": 24,
             "name": "AMERICA",
             "price": 4199,
-            "image": "images/item-2.jpg",
+            "img": "images/item-2.jpg",
             "category": "Zapatos",
             "stock": 5
         },
@@ -49,6 +49,7 @@ function ProductList(){
             "stock": 5
         }
     ]
+    // retorna producto por ID
     this.getProductById = function(id){
         var productWithId;
         list.forEach(function(currentProduct){
@@ -58,4 +59,60 @@ function ProductList(){
         })
         return productWithId;
     }
+    // retorna el array de JSON con todos los productos
+    this.getProductList = function(){
+        return list;
+    }
+    // retorna el HTML de un producto para agregar al listado
+    this.getProductHtml = function(product){
+        return `<div class="col-lg-4 mb-4 text-center">
+        <div class="product-entry border">
+            <a href="#" class="prod-img">
+                <img src=${product.img} class="img-fluid" alt="Free html5 bootstrap 4 template">
+            </a>
+            <div class="desc">
+                <h2>${product.name}</h2>
+                <span class="price">${"$"+ product.price}</span>
+                <a class="btn btn-primary btn-lg btn-add-product" data-id=${product.id}>Agregar al carrito</a>
+            </div>
+        </div> 
+    </div>` 
+    }
+    // retorna el HTLM del producto para agregarlo al listado de productos del carrito
+    this.getCartProductHtml = function(productCart){
+        return `<div class="product-cart d-flex" id = "product-cart-${productCart.id}">
+        <div class="one-forth">
+            <div class="product-img" style="background-image: url(${productCart.img});">
+            </div>
+            <div class="display-tc">
+                <h3>${productCart.name}</h3>
+            </div>
+        </div>
+        <div class="one-eight text-center">
+            <div class="display-tc">
+                <span class="price">${productCart.price}</span>
+            </div>
+        </div>
+        <div class="one-eight text-center">
+            <div class="display-tc">
+                <span class="price">x 1</span>
+            </div>
+        </div>
+        <div class="one-eight text-center">
+            <div class="display-tc">
+                <span class="price">${productCart.price}</span>
+            </div>
+        </div>
+
+        <div class="one-eight text-center">
+            <div class="display-tc">
+                <a class="closed" onclick="removeProduct(${productCart.id})"></a>
+            </div>
+        </div>
+    </div>
+    `
+    }
+    
 }
+
+

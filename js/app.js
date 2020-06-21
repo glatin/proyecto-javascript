@@ -1,4 +1,8 @@
 
+/* next steps: agregar funcionalidad al buscador (muy simple, que coincida la palabra con el nombre
+de algún producto)
+*/
+
 
 // variables globales 
 var productList;
@@ -11,20 +15,23 @@ var totalSpan;
 var discountCodeInput;
 var codeSubmit;
 var addProductBtns;
+var productsDiv;
+var productListDiv;
+
 
 window.onload = function() {
+    // crear lista de productos
+    productList = new ProductList();
+    updateProductList();
     // crear carrito
     cart = new Cart();
     cart.populate();
-    updateCart(); 
-    // crear lista de productos
-    productList = new ProductList();
-    // buscar input de código de descuento y agregarle evento keypress
+    updateCart();
+    // agregar event listeners
     setEventListeners();
 }
 
-
-// función para agregar los event listeners a los elementos del HTML
+// agrega los event listeners a los elementos del HTML
 function setEventListeners() {
     // agrega event listener al tocar una tecla (cualquiera) en el input de código de descuento
     discountCodeInput = document.getElementById("input-discount-code");
@@ -49,16 +56,40 @@ function updateCart(){
     discountSpan = document.getElementById("cart-discount");
     discountSpan.innerHTML = `-$${cart.getDiscountPrice()}`;
     totalSpan = document.getElementById("cart-total");
-    totalSpan.innerHTML = `$${cart.getTotal()}`; 
+    totalSpan.innerHTML = `$${cart.getTotal()}`;
+    // agregar div de productos al carrito
+    productsDiv = document.getElementById("products-cart");
+    cart.getProducts().forEach(currentProduct => {
+        productsDiv.innerHTML += productList.getCartProductHtml(currentProduct);
+    });
+    
 } 
+// actualiza el listado de productos
+function updateProductList(){
+    productListDiv = document.getElementById("product-list");
+    productList.getProductList().forEach(currentProduct => {
+        productListDiv.innerHTML += productList.getProductHtml(currentProduct);
+    });
+}
 
-// agrego 1 producto al carrito y actualizo el total y subtotal del HTML
+// agrega 1 producto al carrito y actualiza el total y subtotal del HTML
 function addToCart(event){
     var productId = event.target.getAttribute("data-id"); // capturo el ID del producto que quiero agregar
     var productToAdd = productList.getProductById(productId);
     cart.addProduct(productToAdd);
     subtotalSpan.innerHTML = `$${cart.getSubtotal()}`;
     totalSpan.innerHTML = `$${cart.getTotal()}`;
+    productsDiv.innerHTML += productList.getCartProductHtml(productToAdd);
+}
+
+// remueve productos desde la cruz del carrito
+function removeProduct(productId){
+    cart.removeProduct(productId);
+    subtotalSpan.innerHTML = `$${cart.getSubtotal()}`;
+    totalSpan.innerHTML = `$${cart.getTotal()}`;
+    discountSpan.innerHTML = `-$${cart.getDiscountPrice()}`;
+    var productToRemoveDiv = document.getElementById(`product-cart-${productId}`);
+    productToRemoveDiv.parentNode.removeChild(productToRemoveDiv);
 }
 
 // chequea si el código de descuento ingresado es válido; si lo es, aplica el descuento y actualiza
@@ -75,14 +106,17 @@ function addDiscountCode(){
         }  
 
     } else {
-        var incorrectCode = document.createElement("p"); // creo el elemento párrafo cuando el código es inválio
-        incorrectCode.innerHTML = "El código ingresado es inválido"; // le agrego texto al párrafo
-        incorrectCode.id = "incorrect-code"; // le pongo un ID al párrafo
-        var discountCodeDiv = document.getElementById("discount-code-div"); // obtengo el div del código de descuento
-        discountCodeDiv.appendChild(incorrectCode); // agrego el párrafo al div y lo muestro
+        var incorrectCode = document.getElementById("incorrect-code"); // trae el párrafo que indica que el código es inválido
+        if (incorrectCode == undefined){ // chequea que el párrafo que indica código inválido NO exista en el HTML (para no mostrarlo más de una vez)
+            var incorrectCode = document.createElement("p"); // creo el elemento párrafo cuando el código es inválio
+            incorrectCode.innerHTML = "El código ingresado es inválido"; // le agrego texto al párrafo
+            incorrectCode.id = "incorrect-code"; // le pongo un ID al párrafo
+            var discountCodeDiv = document.getElementById("discount-code-div"); // obtengo el div del código de descuento
+            discountCodeDiv.appendChild(incorrectCode); // agrego el párrafo al div y lo muestro
+        }  
     }
 }
-// función que chequea si la tecla que se apretó en el input del código de descuento es enter 
+// chequea si la tecla que se apretó en el input del código de descuento es enter 
 // para agregar el código de descuento
 function addDiscountCodeOnEnter(event) {
     if (event.keyCode == 13) { 

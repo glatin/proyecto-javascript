@@ -23,6 +23,11 @@ function Cart() {
         }
         return false;
     };
+    // método para remover descuento
+    this.removeDiscountCode = function(){
+        discountPrice = 0;
+        localStorage.setItem('cartDiscount', discountPrice);
+    }
     // método para sacar stock de los productos agregados al carrito y vaciar carrito
     this.completeOrder = function () {
         products.forEach(function (currentProduct) {
@@ -51,6 +56,12 @@ function Cart() {
         });
         products = productsAux;
         localStorage.setItem('cartProducts', JSON.stringify(products));
+
+        // si el total es negativo, sacar el descuento
+        if (this.getTotal() < 0){
+            this.removeDiscountCode();
+        }
+
     };
     // método para sumar costo de envío
     this.setShippingCost = function (shippingPrice) {
