@@ -16,7 +16,7 @@ var productListDiv;
 $(document).ready(function () {
      // crear lista de productos
      productList = new ProductList();
-     updateProductList();
+     productList.initProductList();
      // crear carrito
      cart = new Cart();
      cart.populate();
@@ -40,11 +40,12 @@ function bindEventHandlers() {
         e.preventDefault();
         addDiscountCode();
     });
-    // setea event handler a los botones de agregar al carrito    
+    /*// setea event handler a los botones de agregar al carrito    
     addProductBtns = $(".btn-add-product");
     addProductBtns.click(function(e){
         addToCart(e);
     })
+    */
 }
 // si se actualiza la página, queda guardado el carrito
 function updateCart(){
@@ -59,25 +60,19 @@ function updateCart(){
     // agrega div de productos al carrito
     productsDiv = $("#products-cart");
     cart.getProducts().forEach(currentProduct => {
-        productsDiv.append(productList.getCartProductHtml(currentProduct));
+        $(productList.getCartProductHtml(currentProduct)).appendTo(productsDiv);
     });
     
 } 
-// actualiza el listado de productos
-function updateProductList(){
-    productListDiv = $("#product-list");
-    productList.getProductList().forEach(currentProduct => {
-        productListDiv.append(productList.getProductHtml(currentProduct));
-    });
-}
+
 // agrega 1 producto al carrito y actualiza el total y subtotal del HTML
-function addToCart(event){
-    var productId = event.target.getAttribute("data-id"); // captura el ID del producto que quiero agregar
+function addToCart(productId){
     var productToAdd = productList.getProductById(productId);
     cart.addProduct(productToAdd);
     subtotalSpan.html(`$${cart.getSubtotal()}`);
     totalSpan.html(`$${cart.getTotal()}`);
-    productsDiv.append(productList.getCartProductHtml(productToAdd));
+    $(productList.getCartProductHtml(productToAdd)).appendTo(productsDiv).css('display', 'none').slideDown('slow'); //animación
+
 }
 
 // remueve productos desde la cruz del carrito
@@ -85,8 +80,11 @@ function removeProduct(productId){
     cart.removeProduct(productId);
     subtotalSpan.html(`$${cart.getSubtotal()}`);
     totalSpan.html(`$${cart.getTotal()}`);
-    discountSpan.html(`-$${cart.getDiscountPrice()}`);
-    $(`#product-cart-${productId}`).remove();
+    discountSpan.html(`-$${cart.getDiscountPrice()}`);    
+    $(`#product-cart-${productId}`).slideUp('slow', function(){ // animación
+        $(`#product-cart-${productId}`).remove();
+    });
+
 }
 // chequea si el código de descuento ingresado es válido; si lo es, aplica el descuento y actualiza
 // el total, sino, agrega un párrafo indicando que el código es inválido

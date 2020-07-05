@@ -1,54 +1,6 @@
 function ProductList(){
-    var list = [
-        {
-            "id": 23,
-            "name": "APRIL",
-            "price": 5339,
-            "img": "images/item-1.jpg",
-            "category": "Borcegos",
-            "stock": 10
-        },
-        {
-            "id": 24,
-            "name": "AMERICA",
-            "price": 4199,
-            "img": "images/item-2.jpg",
-            "category": "Zapatos",
-            "stock": 5
-        },
-        {
-            "id": 25,
-            "name": "NASA",
-            "price": 3999,
-            "img": "images/item-3.jpg",
-            "category": "Zapatillas",
-            "stock": 5
-        },
-        {
-            "id": 26,
-            "name": "SPACE",
-            "price": 2880,
-            "img": "images/item-4.jpg",
-            "category": "Zapatillas",
-            "stock": 5
-        },
-        {
-            "id": 27,
-            "name": "LOLA",
-            "price": 5149,
-            "img": "images/item-5.jpg",
-            "category":"Zapatos",
-            "stock": 5
-        },
-        {
-            "id": 28,
-            "name": "ELON",
-            "price": 2380,
-            "img": "images/item-6.jpg",
-            "category":"Zapatillas",
-            "stock": 5
-        }
-    ]
+    var list = [];
+
     // retorna producto por ID
     this.getProductById = function(id){
         var productWithId;
@@ -59,21 +11,43 @@ function ProductList(){
         })
         return productWithId;
     }
+    // actualiza el listado de productos
+    function updateProductList(){
+        productListDiv = $("#product-list");
+        list.forEach(currentProduct => {
+            productListDiv.append(getProductHtml(currentProduct));
+        });
+    }
+    
+    // carga la lista de productos 
+    this.initProductList = function() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:8080/data/product-data.json",
+            success: function (response) {
+                list = response;
+                updateProductList();
+            }
+        });
+    }
+    
     // retorna el array de JSON con todos los productos
     this.getProductList = function(){
+        console.log('success-despues')
         return list;
     }
+
     // retorna el HTML de un producto para agregar al listado
-    this.getProductHtml = function(product){
+    function getProductHtml(product) {
         return `<div class="col-lg-4 mb-4 text-center">
         <div class="product-entry border">
             <a href="#" class="prod-img">
-                <img src=${product.img} class="img-fluid" alt="Free html5 bootstrap 4 template">
+                <img src=${product.img} class="img-fluid">
             </a>
             <div class="desc">
                 <h2>${product.name}</h2>
                 <span class="price">${"$"+ product.price}</span>
-                <a class="btn btn-primary btn-lg btn-add-product" data-id=${product.id}>Agregar al carrito</a>
+                <a class="btn btn-primary btn-lg btn-add-product" onclick="addToCart(${product.id})">Agregar al carrito</a>
             </div>
         </div> 
     </div>` 

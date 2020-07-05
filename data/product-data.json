@@ -1,0 +1,52 @@
+[
+    {
+        "id": 23,
+        "name": "APRIL",
+        "price": 5339,
+        "img": "images/item-1.jpg",
+        "category": "Borcegos",
+        "stock": 10
+    },
+    {
+        "id": 24,
+        "name": "AMERICA",
+        "price": 4199,
+        "img": "images/item-2.jpg",
+        "category": "Zapatos",
+        "stock": 5
+    },
+    {
+        "id": 25,
+        "name": "NASA",
+        "price": 3999,
+        "img": "images/item-3.jpg",
+        "category": "Zapatillas",
+        "stock": 5
+    },
+    {
+        "id": 26,
+        "name": "SPACE",
+        "price": 2880,
+        "img": "images/item-4.jpg",
+        "category": "Zapatillas",
+        "stock": 5
+    },
+    {
+        "id": 27,
+        "name": "LOLA",
+        "price": 5149,
+        "img": "images/item-5.jpg",
+        "category":"Zapatos",
+        "stock": 5
+    },
+    {
+        "id": 28,
+        "name": "ELON",
+        "price": 2380,
+        "img": "images/item-6.jpg",
+        "category":"Zapatillas",
+        "stock": 5
+    }
+]
+
+    
