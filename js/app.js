@@ -2,6 +2,8 @@
 // variables globales 
 var productList;
 var cart;
+var discountCodeList;
+
 // variables globales del HTML
 var subtotalSpan;
 var shippingSpan;
@@ -12,41 +14,64 @@ var codeSubmit;
 var addProductBtns;
 var productsDiv;
 var productListDiv;
+var categoryList;
+var allCategoryList;
 
 $(document).ready(function () {
-     // crear lista de productos
-     productList = new ProductList();
-     productList.initProductList();
-     // crear carrito
-     cart = new Cart();
-     cart.populate();
-     updateCart();
-     // agregar event handlers 
-     bindEventHandlers();
+    // crear lista de productos
+    productList = new ProductList();
+    productList.initProductList();
+    // crear carrito
+    cart = new Cart();
+    cart.populate();
+    updateCart();
+    // crea los códigos de descuento 
+    discountCodeList = new DiscountCodeList();
+    discountCodeList.initDiscountCodeList();
+    // agregar event handlers 
+    bindEventHandlers(); 
+     
 });
 
 // agrega event handlers 
 function bindEventHandlers() {
-    // setea event handler para aplicar código de descuento con enter
-    discountCodeInput = $("#input-discount-code");
-    discountCodeInput.keypress(function (e) { 
-        if (e.keyCode == 13) { 
-            addDiscountCode();        
-         }
-    });
-    // setea event handler para aplicar código de descuento con click
-    codeSubmit = $("#submit-code");
-    codeSubmit.click(function (e) { 
-        e.preventDefault();
-        addDiscountCode();
-    });
-    /*// setea event handler a los botones de agregar al carrito    
-    addProductBtns = $(".btn-add-product");
-    addProductBtns.click(function(e){
-        addToCart(e);
-    })
-    */
+        // setea event handler para seleccionar categoría
+        categoryList = $(".category");
+        categoryList.click(function (e) {
+            e.preventDefault();
+            selectCategory(e.target.innerText);
+            $(".category").css("font-weight","");
+            $(e.target).css("font-weight","Bold");
+            $(".all-categories").css("font-weight","");
+    
+        });
+        // setea event handler para mostrar todos los productos cuando se selecciona ver todas las categorías
+        allCategoryList = $(".all-categories");
+        allCategoryList.click(function (e) {
+            e.preventDefault();
+            $(productListDiv).empty();
+            productList.initProductList();
+            $(e.target).css("font-weight","Bold");
+            $(".category").css("font-weight","");
+        });
+        // setea event handler para aplicar código de descuento con enter
+        discountCodeInput = $("#input-discount-code");
+        discountCodeInput.keypress(function (e) { 
+            if (e.keyCode == 13) { 
+                addDiscountCode();        
+            }
+        });
+        // setea event handler para aplicar código de descuento con click
+        codeSubmit = $("#submit-code");
+        codeSubmit.click(function (e) { 
+            e.preventDefault();
+            addDiscountCode();
+        });
+
 }
+
+    
+
 // si se actualiza la página, queda guardado el carrito
 function updateCart(){
     subtotalSpan = $("#cart-subtotal");
@@ -57,12 +82,7 @@ function updateCart(){
     discountSpan.html(`-$${cart.getDiscountPrice()}`);
     totalSpan = $("#cart-total");
     totalSpan.html(`$${cart.getTotal()}`);
-    // agrega div de productos al carrito
-    productsDiv = $("#products-cart");
-    cart.getProducts().forEach(currentProduct => {
-        $(productList.getCartProductHtml(currentProduct)).appendTo(productsDiv);
-    });
-    
+    cart.renderProducts();
 } 
 
 // agrega 1 producto al carrito y actualiza el total y subtotal del HTML
@@ -71,8 +91,14 @@ function addToCart(productId){
     cart.addProduct(productToAdd);
     subtotalSpan.html(`$${cart.getSubtotal()}`);
     totalSpan.html(`$${cart.getTotal()}`);
-    $(productList.getCartProductHtml(productToAdd)).appendTo(productsDiv).css('display', 'none').slideDown('slow'); //animación
-
+    var cartItemQuantity = cart.getQuantityItem(productId);
+    // si el producto ya está en el carrito, suma un ítem en lugar de una fila repetida
+    if (cartItemQuantity == 1){
+        $(productList.getCartProductHtml(productToAdd, 1)).appendTo(productsDiv).css('display', 'none').slideDown('slow'); //animación
+    } else {
+        $(`#product-cart-${productId} .quantity`).html(`${cartItemQuantity}`);
+        $(`#product-cart-${productId} .total-price`).html(`${productToAdd.price * cartItemQuantity}`);
+    }
 }
 
 // remueve productos desde la cruz del carrito
@@ -84,37 +110,40 @@ function removeProduct(productId){
     $(`#product-cart-${productId}`).slideUp('slow', function(){ // animación
         $(`#product-cart-${productId}`).remove();
     });
+}
+
+// 
+function selectCategory (productCategory){
+    var productsWithCategory = productList.getProductByCategory(productCategory);
+    $(productListDiv).empty();
+    productsWithCategory.forEach(currentProduct => {
+        var productHtml = productList.getProductHtml(currentProduct)
+        $(productListDiv).append(productHtml);
+    });
 
 }
-// chequea si el código de descuento ingresado es válido; si lo es, aplica el descuento y actualiza
-// el total, sino, agrega un párrafo indicando que el código es inválido
+
+// aplica código de descuento en los casos que corresponda 
 function addDiscountCode(){
     var discountInput = discountCodeInput.val(); // toma el código ingresado por el usuario
-    if (discountInput.toUpperCase().trim() === "DESCUENTO500"){ // lleva el dato a mayúsculas y saca espacios si los tuviese para compararlo con el código de descuento que tengo 
-        cart.addDiscountCode(code500); // agrega el descuento al carrito
+    var discountCode = discountCodeList.getDiscountCodebyCode(discountInput.toUpperCase().trim());
+    $("#code-error").empty();
+    // chequea que no se haya agregado un código de descuento antes
+    if (cart.getDiscountPrice() != 0){
+        $("#code-error").append('<p id="incorrect-code" style="color: red;">No es posible agregar más de un codigo de descuento por compra</p>');
+    // chequea si el código ingresado existe
+    } else if(discountCode == undefined){
+        $("#code-error").append('<p id="incorrect-code" style="color: red;">El código ingresado es inválido</p>');
+    //chequea que el valor del código de descuento no sea mayor al total de la compra
+    } else if (cart.getTotal() < discountCode.value){ 
+        $("#code-error").append('<p id="incorrect-code" style="color: red;">El valor del descuento es mayor al total, elegí más productos y probá nuevamente</p>');
+    } else {
+        cart.addDiscountCode(discountCode); // agrega el descuento al carrito
         totalSpan.html(`$${cart.getTotal()}`); // actualiza el texto del total
         discountSpan.html(`-$${cart.getDiscountPrice()}`); // actualiza el texto del descuento
-        var incorrectCodeParagraph = $("#incorrect-code"); // trae el párrafo que indica que el código es inválido
-        if (incorrectCodeParagraph.length != 0){ // chequea que el párrafo que indica código inválido exista en el HTML
-            incorrectCodeParagraph.remove(); // si el código existe, remuevo el párrafo
-        }  
-
-    } else {
-        var incorrectCode = $("#incorrect-code"); // trae el párrafo que indica que el código es inválido
-        if (incorrectCode.length == 0){ // chequea que el párrafo que indica código inválido NO exista en el HTML (para no mostrarlo más de una vez)
-            var incorrectCode = $("<p>"); // creo el elemento párrafo cuando el código es inválio
-            incorrectCode.html("El código ingresado es inválido"); // le agrego texto al párrafo            
-            incorrectCode.attr("id", "incorrect-code"); // le pongo un ID al párrafo
-            var discountCodeDiv = $("#discount-code-div"); // obtengo el div del código de descuento
-            discountCodeDiv.append(incorrectCode); // agrego el párrafo al div y lo muestro
-        }  
     }
 }
 
 // variable de buscador
 var keysearch = "";
-// variable de lista de categorías
-var categoryList = ['Zapatos', 'Zapatillas', 'Borcegos'];
-var selectedCategory = "";
-// crea código de descuento
-var code500 = new DiscountCode('DESCUENTO500', 500);
+

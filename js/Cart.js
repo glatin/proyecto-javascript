@@ -4,20 +4,49 @@ function Cart() {
     var subtotal = 0;
     var shippingCost = 0;
     var discountPrice = 0;
-    var products = [];
-    
-    
+    var cartProducts = [];
+
+     
     // método para sumar un producto al carrito
     this.addProduct = function (product) {
         subtotal += product.price;
         localStorage.setItem('cartSubtotal', subtotal);
-        products.push(product);
-        localStorage.setItem('cartProducts', JSON.stringify(products));
+        var productCart = this.findProduct(product);
+        // si el producto no está, lo agrego
+        if (productCart == undefined){
+            productCart = new CartProduct(product);
+            cartProducts.push(productCart);
+        // si el producto está, incremento la cantidad
+        } else {
+            productCart.increaseQuantity();
+        }
+        localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
     };
+
+    // método para chequear si en el carrito está el producto agregado
+    this.findProduct = function (product){
+        var productResult;
+        cartProducts.forEach(currentCartProduct => {
+            if (currentCartProduct.product.id == product.id){
+                productResult =  currentCartProduct;
+            }
+        });
+        return productResult;
+    }
+
+    // método para mostrar productos en el carrito 
+    this.renderProducts = function (){
+        var productList = new ProductList();
+        productsDiv = $("#products-cart");
+        cartProducts.forEach(currentCartProduct => {
+            $(productsDiv).append(productList.getCartProductHtml(currentCartProduct.product, currentCartProduct.quantity));
+        });
+    }
+    
     // método para aplicar código de descuento. Devuelve True si el descuento se puede aplicar correctamente.
     this.addDiscountCode = function (discountCode) {
-        if (discountCode.getValue() <= this.getTotal()){
-            discountPrice = discountCode.getValue();
+        if (discountCode.value <= this.getTotal()){
+            discountPrice = discountCode.value;
             localStorage.setItem('cartDiscount', discountPrice);
             return true;
         }
@@ -30,38 +59,29 @@ function Cart() {
     }
     // método para sacar stock de los productos agregados al carrito y vaciar carrito
     this.completeOrder = function () {
-        products.forEach(function (currentProduct) {
-            currentProduct.stock -= 1;
+        cartProducts.forEach(function (currentCartProduct) {
+            currentCartProduct.products.stock -= currentCartProduct.quantity;
         });
         subtotal = 0;
         shippingCost = 0;
         discountPrice = 0;
-        products = []; 
+        cartProducts = []; 
         localStorage.clear();
     };
     // método para remover todos los productos del mismo ID del carrito (botón cruz)
     this.removeProduct = function (productId) {
-        // nuevo array de productos donde se guardan los productos que NO se van a remover
-        var productsAux = [];
-        products.forEach(function (currentProduct) {
-            if (productId === currentProduct.id) {
-                //si hay que remover currentProduct, actualizo el subtotal 
-                subtotal -= currentProduct.price;
+        cartProducts.forEach(function (currentCartProduct, index) {
+            if (productId === currentCartProduct.product.id) {
+                cartProducts.splice(index, 1);
+                subtotal -= currentCartProduct.product.price * currentCartProduct.quantity;
                 localStorage.setItem('cartSubtotal', subtotal);
-            }
-            else {
-                //si no hay que remover currentProduct, actualizo el array de productos
-                productsAux.push(currentProduct);
+                localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
             }
         });
-        products = productsAux;
-        localStorage.setItem('cartProducts', JSON.stringify(products));
-
         // si el total es negativo, sacar el descuento
         if (this.getTotal() < 0){
             this.removeDiscountCode();
         }
-
     };
     // método para sumar costo de envío
     this.setShippingCost = function (shippingPrice) {
@@ -74,7 +94,7 @@ function Cart() {
         subtotal = this.getSubtotal();
         shippingCost = this.getShippingCost();
         discountPrice = this.getDiscountPrice();
-        products = this.getProducts();
+        cartProducts = this.getCartProducts();
     }    
     
     // "getters"
@@ -100,9 +120,19 @@ function Cart() {
         var cartDiscount = localStorage.getItem('cartDiscount');
         return parseInt(cartDiscount) || 0;
     };
-    //método para obtener la lista de productos del carrito
-    this.getProducts = function () {
-        var cartProducts = localStorage.getItem('cartProducts');
-        return JSON.parse(cartProducts) || [];
+    //método para obtener los productos del carrito
+    this.getCartProducts = function () {
+        var productsInCart = localStorage.getItem('cartProducts');
+        return JSON.parse(productsInCart) || [];
     };
+    // método para obtener la cantidad de ítems de un producto en el carrito
+    this.getQuantityItem = function (productId){
+        var itemQuantity = 0;
+        cartProducts.forEach(function (currentCartProduct, index) {
+            if (productId === currentCartProduct.product.id) {
+                itemQuantity = currentCartProduct.quantity;
+            }
+        });
+        return itemQuantity;
+    }
 }

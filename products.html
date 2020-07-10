@@ -6,7 +6,7 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-	<title>Trabajo Final con cambios</title>
+	<title>SPA Shop</title>
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -20,8 +20,10 @@
 	<link rel="stylesheet" href="css/style.css">
 	<!-- Mis Javascripts -->
 	<script src="js/ProductList.js"></script>
+	<script src="js/CartProduct.js"></script>
 	<script src="js/Cart.js"></script>
 	<script src="js/DiscountCode.js"></script>
+	<script src="js/DiscountCodeList.js"></script>
 	<script src="js/app.js"></script>
 	
 	
@@ -79,10 +81,10 @@
 								<div class="side border mb-1">
 									<h3>Categoría</h3>
 									<ul>
-										<li><a href="#">Zapatos</a></li>
-										<li><a href="#">Zapatillas</a></li>
-										<li><a href="#">Borcegos</a></li>
-										<li><a href="#">Ver todo</a></li>
+										<li><a href="#" class="category">Zapatos</a></li>
+										<li><a href="#" class="category">Zapatillas</a></li>
+										<li><a href="#" class="category">Borcegos</a></li>
+										<li><a href="#" class="all-categories">Ver todo</a></li>
 
 										
 									</ul>
@@ -91,7 +93,8 @@
 						</div>
 					</div>
 					<div class="col-lg-9 col-xl-9" >
-						<div class="row row-pb-md" id="product-list">									
+						<div class="row row-pb-md" id="product-list">
+							<!--lista de productos-->									
 						</div>
 					</div>
 				</div>
@@ -116,9 +119,6 @@
 							<div class="one-eight text-center">
 								<span>Total</span>
 							</div>
-							<div class="one-eight text-center px-4">
-								<span>Eliminar</span>
-							</div>
 						</div>
 						<div id="products-cart">
 							
@@ -138,6 +138,9 @@
 											</div>
 											<div class="col-sm-3">
 												<input type="submit" value="Aplicar código" class="btn btn-primary" id="submit-code">
+											</div>
+											<div class="col-sm-8" id="code-error">
+												<!-- mensajes de error en códigos de descuento-->
 											</div>
 										</div>
 									</form>
