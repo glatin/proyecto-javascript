@@ -43,7 +43,6 @@ function bindEventHandlers() {
             $(".category").css("font-weight","");
             $(e.target).css("font-weight","Bold");
             $(".all-categories").css("font-weight","");
-    
         });
         // setea event handler para mostrar todos los productos cuando se selecciona ver todas las categorías
         allCategoryList = $(".all-categories");
@@ -112,7 +111,7 @@ function removeProduct(productId){
     });
 }
 
-// 
+// filtra los productos de la categoría seleccionada
 function selectCategory (productCategory){
     var productsWithCategory = productList.getProductByCategory(productCategory);
     $(productListDiv).empty();
@@ -144,6 +143,4 @@ function addDiscountCode(){
     }
 }
 
-// variable de buscador
-var keysearch = "";
 
