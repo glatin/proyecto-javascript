@@ -66,6 +66,15 @@ function bindEventHandlers() {
             e.preventDefault();
             addDiscountCode();
         });
+        // setea event handler para finalizar la compra
+        $("#buy-btn").click(function (e) { 
+            console.log('entré al botón de comprar');
+            e.preventDefault();
+            cart.completeOrder();
+            updateCart();  
+            productsDiv.empty(); 
+        });
+
 
 }
 
@@ -142,5 +151,3 @@ function addDiscountCode(){
         discountSpan.html(`-$${cart.getDiscountPrice()}`); // actualiza el texto del descuento
     }
 }
-
-

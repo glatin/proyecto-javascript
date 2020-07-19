@@ -3,7 +3,7 @@
 function CartProduct(product){
     this.quantity = 1;
     this.product = product;
-    // méotodo para incrementar un ítem de un producto
+    // método para incrementar un ítem de un producto
     this.increaseQuantity = function(){
         this.quantity ++;
     }

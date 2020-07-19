@@ -60,7 +60,7 @@ function Cart() {
     // método para sacar stock de los productos agregados al carrito y vaciar carrito
     this.completeOrder = function () {
         cartProducts.forEach(function (currentCartProduct) {
-            currentCartProduct.products.stock -= currentCartProduct.quantity;
+            currentCartProduct.product.stock -= currentCartProduct.quantity;
         });
         subtotal = 0;
         shippingCost = 0;
