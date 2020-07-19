@@ -5,7 +5,6 @@ function Cart() {
     var shippingCost = 0;
     var discountPrice = 0;
     var cartProducts = [];
-
      
     // método para sumar un producto al carrito
     this.addProduct = function (product) {
@@ -18,10 +17,27 @@ function Cart() {
             cartProducts.push(productCart);
         // si el producto está, incremento la cantidad
         } else {
+            console.log(productCart);
             productCart.increaseQuantity();
         }
         localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
     };
+
+    // método para remover todos los productos del mismo ID del carrito (botón cruz)
+    this.removeProduct = function (productId) {
+        cartProducts.forEach(function (currentCartProduct, index) {
+            if (productId === currentCartProduct.product.id) {
+                cartProducts.splice(index, 1);
+                subtotal -= currentCartProduct.product.price * currentCartProduct.quantity;
+                localStorage.setItem('cartSubtotal', subtotal);
+                localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
+            }
+        });
+        // si el total es negativo, sacar el descuento
+        if (this.getTotal() < 0){
+            this.removeDiscountCode();
+        }
+    }
 
     // método para chequear si en el carrito está el producto agregado
     this.findProduct = function (product){
@@ -51,12 +67,14 @@ function Cart() {
             return true;
         }
         return false;
-    };
+    }
+
     // método para remover descuento
     this.removeDiscountCode = function(){
         discountPrice = 0;
         localStorage.setItem('cartDiscount', discountPrice);
     }
+
     // método para sacar stock de los productos agregados al carrito y vaciar carrito
     this.completeOrder = function () {
         cartProducts.forEach(function (currentCartProduct) {
@@ -67,27 +85,13 @@ function Cart() {
         discountPrice = 0;
         cartProducts = []; 
         localStorage.clear();
-    };
-    // método para remover todos los productos del mismo ID del carrito (botón cruz)
-    this.removeProduct = function (productId) {
-        cartProducts.forEach(function (currentCartProduct, index) {
-            if (productId === currentCartProduct.product.id) {
-                cartProducts.splice(index, 1);
-                subtotal -= currentCartProduct.product.price * currentCartProduct.quantity;
-                localStorage.setItem('cartSubtotal', subtotal);
-                localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
-            }
-        });
-        // si el total es negativo, sacar el descuento
-        if (this.getTotal() < 0){
-            this.removeDiscountCode();
-        }
-    };
+    }
+
     // método para sumar costo de envío
     this.setShippingCost = function (shippingPrice) {
         shippingCost = shippingPrice;
         localStorage.setItem('cartShippingCost', shippingCost);
-    };
+    }
     
     // método para popular las variables del cart con los valores guardados en localStorage
     this.populate = function(){
@@ -98,7 +102,6 @@ function Cart() {
     }    
     
     // "getters"
-
     // método para obtener el total del carrito
     this.getTotal = function () {
         var total = subtotal + shippingCost - discountPrice;

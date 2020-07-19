@@ -34,7 +34,6 @@ function ProductList(){
     
     // carga la lista de productos 
     this.initProductList = function() {
-        
         $.ajax({
             type: "GET",
             url: "data/product-data.json",
@@ -44,11 +43,9 @@ function ProductList(){
             },
             error : function() {
                 $("#product-list").append('<p style="font-size: 55px; text-align: center;" > Error el cargar el listado de productos</p>');
-            }, 
-                
-        })
+            },      
+        });
     }
-
     
     // retorna el array de JSON con todos los productos
     this.getProductList = function(){
@@ -57,51 +54,54 @@ function ProductList(){
 
     // retorna el HTML de un producto para agregar al listado
     this.getProductHtml = function(product) {
-        return `<div class="col-lg-4 mb-4 text-center">
-        <div class="product-entry border">
-            <a href="#" class="prod-img">
-                <img src=${product.img} class="img-fluid">
-            </a>
-            <div class="desc">
-                <h2>${product.name}</h2>
-                <span class="price">${"$"+ product.price}</span>
-                <a class="btn btn-primary btn-lg btn-add-product" onclick="addToCart(${product.id})">Agregar al carrito</a>
-            </div>
-        </div> 
-    </div>` 
+        return `
+            <div class="col-lg-4 mb-4 text-center">
+                <div class="product-entry border">
+                    <a href="#" class="prod-img">
+                        <img src=${product.img} class="img-fluid">
+                    </a>
+                    <div class="desc">
+                        <h2>${product.name}</h2>
+                        <span class="price">${"$"+ product.price}</span>
+                        <a class="btn btn-primary btn-lg btn-add-product" onclick="addToCart(${product.id})">Agregar al carrito</a>
+                    </div>
+                </div> 
+            </div>` 
     }
+    
     // retorna el HTLM del producto para agregarlo al listado de productos del carrito
     this.getCartProductHtml = function(productCart, quantity){
-        return `<div class="product-cart d-flex" id = "product-cart-${productCart.id}">
-        <div class="one-forth">
-            <div class="product-img" style="background-image: url(${productCart.img});">
-            </div>
-            <div class="display-tc">
-                <h3>${productCart.name}</h3>
-            </div>
-        </div>
-        <div class="one-eight text-center">
-            <div class="display-tc">
-                <span class="price">${productCart.price}</span>
-            </div>
-        </div>
-        <div class="one-eight text-center">
-            <div class="display-tc">
-                <span class="quantity">${quantity}</span>
-            </div>
-        </div>
-        <div class="one-eight text-center">
-            <div class="display-tc">
-                <span class="total-price">${productCart.price * quantity}</span>
-            </div>
-        </div>
+        return `
+            <div class="product-cart d-flex" id = "product-cart-${productCart.id}">
+                <div class="one-forth">
+                    <div class="product-img" style="background-image: url(${productCart.img});">
+                    </div>
+                    <div class="display-tc">
+                        <h3>${productCart.name}</h3>
+                    </div>
+                </div>
+                <div class="one-eight text-center">
+                    <div class="display-tc">
+                        <span class="price">${productCart.price}</span>
+                    </div>
+                </div>
+                <div class="one-eight text-center">
+                    <div class="display-tc">
+                        <span class="quantity">${quantity}</span>
+                    </div>
+                </div>
+                <div class="one-eight text-center">
+                    <div class="display-tc">
+                        <span class="total-price">${productCart.price * quantity}</span>
+                    </div>
+                </div>
 
-        <div class="one-eight text-center">
-            <div class="display-tc">
-                <a class="closed" onclick="removeProduct(${productCart.id})"></a>
+                <div class="one-eight text-center">
+                    <div class="display-tc">
+                        <a class="closed" onclick="removeProduct(${productCart.id})"></a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    `
+            `
     }
 }

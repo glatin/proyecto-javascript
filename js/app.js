@@ -10,12 +10,8 @@ var shippingSpan;
 var discountSpan;
 var totalSpan;
 var discountCodeInput;
-var codeSubmit;
-var addProductBtns;
 var productsDiv;
 var productListDiv;
-var categoryList;
-var allCategoryList;
 
 $(document).ready(function () {
     // crear lista de productos
@@ -36,8 +32,7 @@ $(document).ready(function () {
 // agrega event handlers 
 function bindEventHandlers() {
         // setea event handler para seleccionar categoría
-        categoryList = $(".category");
-        categoryList.click(function (e) {
+        $(".category").click(function (e) {
             e.preventDefault();
             selectCategory(e.target.innerText);
             $(".category").css("font-weight","");
@@ -45,8 +40,7 @@ function bindEventHandlers() {
             $(".all-categories").css("font-weight","");
         });
         // setea event handler para mostrar todos los productos cuando se selecciona ver todas las categorías
-        allCategoryList = $(".all-categories");
-        allCategoryList.click(function (e) {
+        $(".all-categories").click(function (e) {
             e.preventDefault();
             $(productListDiv).empty();
             productList.initProductList();
@@ -60,25 +54,19 @@ function bindEventHandlers() {
                 addDiscountCode();        
             }
         });
-        // setea event handler para aplicar código de descuento con click
-        codeSubmit = $("#submit-code");
-        codeSubmit.click(function (e) { 
+        // setea event handler para aplicar código de descuento con click 
+        $("#submit-code").click(function (e) { 
             e.preventDefault();
             addDiscountCode();
         });
         // setea event handler para finalizar la compra
-        $("#buy-btn").click(function (e) { 
-            console.log('entré al botón de comprar');
+        $("#buy-btn").click(function (e) {
             e.preventDefault();
             cart.completeOrder();
             updateCart();  
             productsDiv.empty(); 
         });
-
-
 }
-
-    
 
 // si se actualiza la página, queda guardado el carrito
 function updateCart(){
