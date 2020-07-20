@@ -13,7 +13,7 @@ function Cart() {
         var productCart = this.findProduct(product);
         // si el producto no está, lo agrego
         if (productCart == undefined){
-            productCart = new CartProduct(product);
+            productCart = new CartProduct(product, 1);
             cartProducts.push(productCart);
         // si el producto está, incremento la cantidad
         } else {
@@ -125,8 +125,15 @@ function Cart() {
     };
     //método para obtener los productos del carrito
     this.getCartProducts = function () {
-        var productsInCart = localStorage.getItem('cartProducts');
-        return JSON.parse(productsInCart) || [];
+        var cartProductsCart = [];
+        var productsInCartJson = localStorage.getItem('cartProducts');
+        productsInCartJson = JSON.parse(productsInCartJson) || []
+
+        productsInCartJson.forEach(currentCartProduct => {
+            cartProduct = new CartProduct(currentCartProduct.product, currentCartProduct.quantity);
+            cartProductsCart.push(cartProduct);
+        });
+        return cartProductsCart;
     };
     // método para obtener la cantidad de ítems de un producto en el carrito
     this.getQuantityItem = function (productId){
