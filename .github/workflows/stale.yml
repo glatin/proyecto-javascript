@@ -19,6 +19,4 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         stale-issue-message: 'Este issue se cierra por falta de actividad'
-        stale-pr-message: 'Stale pull request message'
         stale-issue-label: 'no-issue-activity'
-        stale-pr-label: 'no-pr-activity'
